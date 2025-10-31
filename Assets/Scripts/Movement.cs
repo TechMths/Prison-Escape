@@ -11,14 +11,22 @@ public class Movement : MonoBehaviour
 
     public float groundDrag;
 
+    [Header("Jump")]
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump;
 
+    [Header("Crouch")]
+    public float crouchSpeed;
+    public float crouchYScale;
+    private float startYScale;
+
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode runKey = KeyCode.LeftShift;
+    public KeyCode crouchKey = KeyCode.LeftControl;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -34,12 +42,21 @@ public class Movement : MonoBehaviour
 
     Rigidbody rb;
 
+    public MovementState state;
+
+    public enum MovementState 
+    { 
+        crouching
+    }
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        ResetJump();
+
+        readyToJump = true;
+
+        startYScale = transform.localScale.y;
     }
 
 
@@ -49,12 +66,23 @@ public class Movement : MonoBehaviour
 
         MyInput();
         SpeedControl();
+        StateHandler();
 
         if (grounded)
             rb.linearDamping = groundDrag;
         else
             rb.linearDamping = 0;
     }
+
+    private void StateHandler() 
+    {
+        if (Input.GetKey(crouchKey)) 
+        { 
+            state = MovementState.crouching;
+            moveSpeed = crouchSpeed;
+        }
+    }
+
 
     private void FixedUpdate()
     {
@@ -83,6 +111,18 @@ public class Movement : MonoBehaviour
         {
             RunOff();
         }
+
+        if (Input.GetKeyDown(crouchKey)) 
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+        }
+
+        if (Input.GetKeyUp(crouchKey)) 
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        }
+
     }
 
     private void MovePlayer() 
