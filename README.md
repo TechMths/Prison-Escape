@@ -4,7 +4,7 @@
 Um jogo com uma proposta simples: Fugir! 
 Nesta aventura, você acorda em um local obscuro e abandonado, seu objetivo é fugir sem que a câmera te veja!
 
-## Ferrametnas
+## Ferramentas
 feito em C# e Unity, foi realizado para um projeto de freelance. Foi desenvolvido em torno de 2 semanas de desenvolvimento.
 
 Versão do Unity: 6000.2.10f1
